@@ -16,12 +16,12 @@ export default function App() {
       try {
         window.embeddedservice_bootstrap.settings.language = "en_US";
         window.embeddedservice_bootstrap.init(
-          "00DKd000004WqB4",
-          "Shopease_test_channel",
-          "https://hibizdemo.my.site.com/ESWShopeasetestchannel1773302517075",
-          {
-            scrt2URL: "https://hibizdemo.my.salesforce-scrt.com",
-          }
+          '00DKd000004WqB4',
+				'shopease_test_2',
+				'https://hibizdemo.my.site.com/ESWshopeasetest21773312607792',
+				{
+					scrt2URL: 'https://hibizdemo.my.salesforce-scrt.com'
+				}
         );
       } catch (err) {
         console.error("Error loading Embedded Messaging: ", err);
@@ -32,7 +32,7 @@ export default function App() {
     script.id = "sf-embedded-bootstrap";
     script.type = "text/javascript";
     script.src =
-      "https://hibizdemo.my.site.com/ESWShopeasetestchannel1773302517075/assets/js/bootstrap.min.js";
+      "'https://hibizdemo.my.site.com/ESWshopeasetest21773312607792/assets/js/bootstrap.min.js";
     script.onload = () => window.initEmbeddedMessaging();
     script.onerror = () => console.error("Failed to load Salesforce bootstrap script.");
     document.body.appendChild(script);
