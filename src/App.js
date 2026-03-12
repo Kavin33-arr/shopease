@@ -12,30 +12,40 @@ export default function App() {
 
   useEffect(() => {
     if (document.getElementById("sf-embedded-bootstrap")) return;
+
     window.initEmbeddedMessaging = function () {
       try {
         window.embeddedservice_bootstrap.settings.language = "en_US";
         window.embeddedservice_bootstrap.init(
-          '00DKd000004WqB4',
-				'shopease_test_2',
-				'https://hibizdemo.my.site.com/ESWshopeasetest21773312607792',
-				{
-					scrt2URL: 'https://hibizdemo.my.salesforce-scrt.com'
-				}
+          "00DKd000004WqB4",
+          "shopease_test_2",
+          "https://hibizdemo.my.site.com/ESWshopeasetest21773312607792",
+          { scrt2URL: "https://hibizdemo.my.salesforce-scrt.com" }
         );
       } catch (err) {
         console.error("Error loading Embedded Messaging: ", err);
       }
     };
 
+    // ✅ Listen for ready — pass topic from pre-chat selection
+    window.addEventListener("onEmbeddedMessagingReady", () => {
+      const topic = sessionStorage.getItem("selectedTopic");
+      if (topic && window.embeddedservice_bootstrap?.prechatAPI) {
+        window.embeddedservice_bootstrap.prechatAPI.setVisiblePrechatFields({
+          Subject: { value: topic, isEditableByUser: false }
+        });
+        sessionStorage.removeItem("selectedTopic");
+      }
+    });
+
     const script = document.createElement("script");
     script.id = "sf-embedded-bootstrap";
     script.type = "text/javascript";
-    script.src =
-      "https://hibizdemo.my.site.com/ESWshopeasetest21773312607792/assets/js/bootstrap.min.js";
+    script.src = "https://hibizdemo.my.site.com/ESWshopeasetest21773312607792/assets/js/bootstrap.min.js";
     script.onload = () => window.initEmbeddedMessaging();
     script.onerror = () => console.error("Failed to load Salesforce bootstrap script.");
     document.body.appendChild(script);
+
     return () => {
       const existing = document.getElementById("sf-embedded-bootstrap");
       if (existing) document.body.removeChild(existing);
@@ -56,7 +66,6 @@ export default function App() {
       <Hero />
       <ProductGrid products={filtered} onAddToCart={handleAddToCart} />
       <Footer />
-      {/* Salesforce chat button renders itself into the DOM automatically */}
     </div>
   );
 }
