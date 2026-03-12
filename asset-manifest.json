@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Kavin33-arr/shopease/static/css/main.10c042b0.css",
+    "main.js": "/Kavin33-arr/shopease/static/js/main.ac83ed55.js",
+    "index.html": "/Kavin33-arr/shopease/index.html",
+    "main.10c042b0.css.map": "/Kavin33-arr/shopease/static/css/main.10c042b0.css.map",
+    "main.ac83ed55.js.map": "/Kavin33-arr/shopease/static/js/main.ac83ed55.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.10c042b0.css",
+    "static/js/main.ac83ed55.js"
+  ]
+}
