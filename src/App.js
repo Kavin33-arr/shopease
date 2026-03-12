@@ -32,7 +32,7 @@ export default function App() {
     script.id = "sf-embedded-bootstrap";
     script.type = "text/javascript";
     script.src =
-      "'https://hibizdemo.my.site.com/ESWshopeasetest21773312607792/assets/js/bootstrap.min.js";
+      "https://hibizdemo.my.site.com/ESWshopeasetest21773312607792/assets/js/bootstrap.min.js";
     script.onload = () => window.initEmbeddedMessaging();
     script.onerror = () => console.error("Failed to load Salesforce bootstrap script.");
     document.body.appendChild(script);
