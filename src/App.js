@@ -13,6 +13,22 @@ export default function App() {
   useEffect(() => {
     if (document.getElementById("sf-embedded-bootstrap")) return;
 
+    // ✅ ADD THIS — Listen for topic from LWC pre-chat
+    window.addEventListener("message", (event) => {
+      if (event.origin !== "https://hibizdemo.my.site.com") return;
+      if (event.data?.type === "SET_PRECHAT_TOPIC") {
+        const topic = event.data.topic;
+        console.log("✅ Topic from LWC:", topic);
+        try {
+          window.embeddedservice_bootstrap.prechatAPI
+            .setHiddenPrechatFields({ _subject: topic });
+        } catch (e) {
+          // Bootstrap not ready yet — store for later
+          sessionStorage.setItem("selectedTopic", topic);
+        }
+      }
+    });
+
     window.initEmbeddedMessaging = function () {
       try {
         window.embeddedservice_bootstrap.settings.language = "en_US";
@@ -27,13 +43,12 @@ export default function App() {
       }
     };
 
-    // ✅ Listen for ready — pass topic from pre-chat selection
+    // ✅ KEEP THIS — fallback if topic set before bootstrap ready
     window.addEventListener("onEmbeddedMessagingReady", () => {
       const topic = sessionStorage.getItem("selectedTopic");
       if (topic && window.embeddedservice_bootstrap?.prechatAPI) {
-        window.embeddedservice_bootstrap.prechatAPI.setVisiblePrechatFields({
-          Subject: { value: topic, isEditableByUser: false }
-        });
+        window.embeddedservice_bootstrap.prechatAPI
+          .setHiddenPrechatFields({ _subject: topic }); // ← use Hidden not Visible
         sessionStorage.removeItem("selectedTopic");
       }
     });
@@ -51,21 +66,4 @@ export default function App() {
       if (existing) document.body.removeChild(existing);
     };
   }, []);
-
-  const filtered =
-    activeCategory === "All"
-      ? allProducts
-      : allProducts.filter((p) => p.category === activeCategory);
-
-  const handleAddToCart = (product) => {
-    setCart((prev) => [...prev, product]);
-  };
-
-  return (
-    <div className="app">
-      <Hero />
-      <ProductGrid products={filtered} onAddToCart={handleAddToCart} />
-      <Footer />
-    </div>
-  );
 }
