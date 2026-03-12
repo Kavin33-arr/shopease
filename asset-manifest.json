@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/shopease/static/css/main.10c042b0.css",
-    "main.js": "/shopease/static/js/main.7ad011bb.js",
+    "main.js": "/shopease/static/js/main.d05d29b2.js",
     "index.html": "/shopease/index.html",
     "main.10c042b0.css.map": "/shopease/static/css/main.10c042b0.css.map",
-    "main.7ad011bb.js.map": "/shopease/static/js/main.7ad011bb.js.map"
+    "main.d05d29b2.js.map": "/shopease/static/js/main.d05d29b2.js.map"
   },
   "entrypoints": [
     "static/css/main.10c042b0.css",
-    "static/js/main.7ad011bb.js"
+    "static/js/main.d05d29b2.js"
   ]
 }
