@@ -18,7 +18,7 @@ export default function Navbar({ cartCount, onCategoryChange, activeCategory }) 
         ))}
       </ul>
       <div className="nav-cart">
-        🛒 Carts <span className="cart-badge">{cartCount}</span>
+        🛒 Cart <span className="cart-badge">{cartCount}</span>
       </div>
     </nav>
   );
