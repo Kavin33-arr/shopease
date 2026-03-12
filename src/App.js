@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import ProductGrid from "./components/ProductGrid";
+import Footer from "./components/Footer";
+import allProducts from "./data/products";
+import "./App.css";
 
-function App() {
+export default function App() {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [cart, setCart] = useState([]);
+
+  const filtered =
+    activeCategory === "All"
+      ? allProducts
+      : allProducts.filter((p) => p.category === activeCategory);
+
+  const handleAddToCart = (product) => {
+    setCart((prev) => [...prev, product]);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      {/* <Navbar
+        cartCount={cart.length}
+        onCategoryChange={setActiveCategory}
+        activeCategory={activeCategory}
+      /> */}
+      <Hero />
+      <ProductGrid products={filtered} onAddToCart={handleAddToCart} />
+      <Footer />
     </div>
   );
 }
-
-export default App;

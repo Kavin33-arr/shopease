@@ -1,38 +1,80 @@
-.App {
-  text-align: center;
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background: #f9f9f9; color: #333; }
+
+/* Navbar */
+.navbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 60px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-logo { font-size: 1.5rem; font-weight: 700; color: #e44d26; }
+.nav-links { display: flex; list-style: none; gap: 28px; }
+.nav-links li { cursor: pointer; font-size: 0.95rem; color: #555; transition: color 0.2s; }
+.nav-links li:hover, .nav-links li.active { color: #e44d26; font-weight: 600; border-bottom: 2px solid #e44d26; padding-bottom: 2px; }
+.nav-cart { font-size: 1rem; cursor: pointer; position: relative; }
+.cart-badge {
+  background: #e44d26; color: #fff; border-radius: 50%;
+  padding: 2px 7px; font-size: 0.75rem; margin-left: 6px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Hero */
+.hero {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 60px 60px; background: linear-gradient(135deg, #fff5f0, #fff);
+  min-height: 420px;
 }
+.hero-content { max-width: 480px; }
+.hero-tag { color: #e44d26; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+.hero-content h1 { font-size: 3rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+.hero-sub { color: #777; margin-bottom: 28px; font-size: 1rem; }
+.hero-btn {
+  background: #e44d26; color: #fff; border: none;
+  padding: 14px 32px; border-radius: 30px; font-size: 1rem;
+  cursor: pointer; transition: background 0.2s;
+}
+.hero-btn:hover { background: #c43b1a; }
+.hero-image img { width: 420px; border-radius: 20px; object-fit: cover; box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+/* Products */
+.product-section { padding: 50px 60px; }
+.product-section h2 { font-size: 1.8rem; margin-bottom: 8px; }
+.product-section hr { border: none; border-top: 3px solid #e44d26; width: 60px; margin-bottom: 30px; }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px; }
+.no-products { text-align: center; color: #999; margin-top: 40px; font-size: 1.1rem; }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* Product Card */
+.product-card {
+  background: #fff; border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07); overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
+.product-card:hover { transform: translateY(-6px); box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+.product-img-wrapper { position: relative; }
+.product-img-wrapper img { width: 100%; height: 220px; object-fit: cover; }
+.product-category {
+  position: absolute; top: 10px; left: 10px;
+  background: #e44d26; color: #fff; font-size: 0.72rem;
+  padding: 3px 10px; border-radius: 20px; text-transform: uppercase;
+}
+.product-info { padding: 16px; }
+.product-info h3 { font-size: 0.95rem; margin-bottom: 10px; color: #222; }
+.product-meta { display: flex; justify-content: space-between; margin-bottom: 14px; }
+.product-price { font-weight: 700; color: #e44d26; font-size: 1.05rem; }
+.product-rating { font-size: 0.85rem; color: #888; }
+.add-btn {
+  width: 100%; background: #333; color: #fff;
+  border: none; padding: 10px; border-radius: 8px;
+  cursor: pointer; font-size: 0.9rem; transition: background 0.2s;
+}
+.add-btn:hover { background: #e44d26; }
+.add-btn.added { background: #27ae60; }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* Footer */
+.footer { background: #111; color: #aaa; padding: 50px 60px 20px; }
+.footer-cols { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 30px; }
+.footer h4 { color: #fff; margin-bottom: 14px; font-size: 1rem; }
+.footer p, .footer li { font-size: 0.88rem; line-height: 1.9; }
+.footer ul { list-style: none; }
+.footer ul li { cursor: pointer; transition: color 0.2s; }
+.footer ul li:hover { color: #e44d26; }
+.footer-copy { text-align: center; border-top: 1px solid #333; padding-top: 20px; font-size: 0.82rem; }
