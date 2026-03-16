@@ -1,5 +1,4 @@
-// ChatFeedback.jsx
-// Drop in src/components/ and add <ChatFeedback /> in App.jsx
+// ChatFeedback.jsx — FINAL (payload shape confirmed)
 
 import { useEffect, useRef, useState, useCallback } from "react";
 
@@ -17,48 +16,78 @@ export default function ChatFeedback() {
   const rated = useRef(new Set());
 
   useEffect(() => {
-    const onMessage = (e) => {
+    const onMessageSent = (e) => {
+      // ✅ Confirmed payload shape:
+      // e.detail = { conversationEntry: { identifier, sender: { role }, entryPayload: "JSON string" } }
       const entry = e.detail?.conversationEntry;
       if (!entry) return;
-      const role  = entry.sender?.role;
-      const msgId = entry.identifier;
-      if ((role === "Chatbot" || role === "Agent") && !rated.current.has(msgId)) {
+
+      const role  = entry.sender?.role;   // confirmed: "Chatbot"
+      const msgId = entry.identifier;     // confirmed: "1773678268745-REQ-1"
+
+      if (
+        (role === "Chatbot" || role === "Bot" || role === "Agent") &&
+        msgId &&
+        !rated.current.has(msgId)
+      ) {
+        // ✅ entryPayload is a JSON string — must parse it
+        let text = "";
+        try {
+          const parsed = JSON.parse(entry.entryPayload);
+          text =
+            parsed?.abstractMessage?.staticContent?.message ||
+            parsed?.abstractMessage?.text ||
+            "";
+        } catch {
+          text = "";
+        }
+
         setTimeout(() => {
-          setPending({ id: msgId, generationId: msgId, text: entry.entryPayload?.abstractMessage?.text || "" });
-          setSubmitted(false); setShowReasons(false); setReasonText("");
+          setPending({ id: msgId, generationId: msgId, text });
+          setSubmitted(false);
+          setShowReasons(false);
+          setReasonText("");
         }, 700);
       }
     };
-    window.addEventListener("embeddedMessagingConversationItemReceived", onMessage);
-    return () => window.removeEventListener("embeddedMessagingConversationItemReceived", onMessage);
+
+    window.addEventListener("onEmbeddedMessageSent", onMessageSent);
+    return () => window.removeEventListener("onEmbeddedMessageSent", onMessageSent);
   }, []);
 
-  const submitFeedback = useCallback(async (sentiment) => {
-    if (!pending) return;
-    setSubmitting(true);
-    try {
-      const res  = await fetch(APEX_ENDPOINT, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          generationId:   pending.generationId,
-          sentiment,
-          reasonText:     reasonText || null,
-          messagePreview: pending.text.slice(0, 120),
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        rated.current.add(pending.id);
-        setSubmitted(true);
-        setTimeout(() => setPending(null), 2200);
+  const submitFeedback = useCallback(
+    async (sentiment) => {
+      if (!pending) return;
+      setSubmitting(true);
+      try {
+        const res = await fetch(APEX_ENDPOINT, {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            generationId:   pending.generationId,
+            sentiment,
+            reasonText:     reasonText || null,
+            messagePreview: pending.text.slice(0, 120),
+          }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          rated.current.add(pending.id);
+          setSubmitted(true);
+          setTimeout(() => setPending(null), 2200);
+        }
+      } catch (err) {
+        console.error("Feedback error:", err);
+      } finally {
+        setSubmitting(false);
       }
-    } catch (err) { console.error(err); }
-    finally      { setSubmitting(false); }
-  }, [pending, reasonText]);
+    },
+    [pending, reasonText]
+  );
 
-  const onThumb         = (dir) => dir === "down" ? setShowReasons(true) : submitFeedback("Positive");
-  const onReasonSubmit  = () => { setShowReasons(false); submitFeedback("Negative"); };
-  const onDismiss       = () => { if (pending) rated.current.add(pending.id); setPending(null); };
+  const onThumb        = (dir) => dir === "down" ? setShowReasons(true) : submitFeedback("Positive");
+  const onReasonSubmit = () => { setShowReasons(false); submitFeedback("Negative"); };
+  const onDismiss      = () => { if (pending) rated.current.add(pending.id); setPending(null); };
 
   if (!pending) return null;
 
@@ -75,12 +104,23 @@ export default function ChatFeedback() {
           <div style={S.col}>
             <span style={S.label}>What went wrong?</span>
             <div style={S.chipRow}>
-              {REASONS.map(r => (
-                <button key={r} style={{...S.chip,...(reasonText===r?S.chipOn:{})}} onClick={() => setReasonText(r)}>{r}</button>
+              {REASONS.map((r) => (
+                <button
+                  key={r}
+                  style={{ ...S.chip, ...(reasonText === r ? S.chipOn : {}) }}
+                  onClick={() => setReasonText(r)}
+                >
+                  {r}
+                </button>
               ))}
             </div>
-            <textarea style={S.ta} rows={2} placeholder="Additional details (optional)"
-              value={reasonText} onChange={e => setReasonText(e.target.value)}/>
+            <textarea
+              style={S.ta}
+              rows={2}
+              placeholder="Additional details (optional)"
+              value={reasonText}
+              onChange={(e) => setReasonText(e.target.value)}
+            />
             <div style={S.row}>
               <button style={S.ghost} onClick={() => setShowReasons(false)}>Cancel</button>
               <button style={S.primary} disabled={submitting} onClick={onReasonSubmit}>
