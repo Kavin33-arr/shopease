@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 
-const APEX_ENDPOINT = "https://hibizdemo.my.site.com/apex/FeedbackProxy";
+const ENDPOINT = "https://hibizdemo.my.site.com/apex/FeedbackProxy";
 ;
 
 const REASONS = ["Inaccurate", "Unhelpful", "Off-topic", "Too long", "Other"];
@@ -60,16 +60,18 @@ export default function ChatFeedback() {
       if (!pending) return;
       setSubmitting(true);
       try {
-        const res = await fetch(APEX_ENDPOINT, {
-          method:  "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            generationId:   pending.generationId,
-            sentiment,
-            reasonText:     reasonText || null,
-            messagePreview: pending.text.slice(0, 120),
-          }),
-        });
+        const res = await fetch(ENDPOINT, {
+  method: "POST",
+  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  body: new URLSearchParams({
+    body: JSON.stringify({
+      id:           crypto.randomUUID(),
+      generationId: pending.generationId,
+      sentiment:    sentiment,
+      reasonText:   reasonText || null,
+    })
+  })
+});
         const data = await res.json();
         if (data.success) {
           rated.current.add(pending.id);
