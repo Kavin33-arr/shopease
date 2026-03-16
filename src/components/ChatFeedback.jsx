@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 
-const APEX_ENDPOINT =
-  "https://hibizdemo.my.site.com/services/apexrest/AgentFeedback";
+const APEX_ENDPOINT = "https://hibizdemo.my.site.com/apex/FeedbackProxy";
+;
 
 const REASONS = ["Inaccurate", "Unhelpful", "Off-topic", "Too long", "Other"];
 
