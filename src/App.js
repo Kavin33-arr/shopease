@@ -52,9 +52,7 @@ export default function App() {
       }
 
 
-      window.embeddedservice_bootstrap.utilAPI.sendTextMessage(
-        event.detail
-      )
+      window.embeddedservice_bootstrap.utilAPI.sendTextMessage(JSON.stringify(event.detail))
       .then(() => console.log("[AgentContext] Context passed:", event.detail))
       .catch((err) => console.error("[AgentContext] Failed:", err));
     };
