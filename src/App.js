@@ -7,6 +7,8 @@ import allProducts from "./data/products";
 import "./App.css";
 
 export default function App() {
+
+  // ── 1. Boot Salesforce Embedded Messaging ──────────────────────────
   useEffect(() => {
     if (document.getElementById("sf-embedded-bootstrap")) return;
 
@@ -17,9 +19,7 @@ export default function App() {
           "00DKd000004WqB4",
           "Shopease_Test_3",
           "https://hibizdemo.my.site.com/ESWShopeaseTest31773480481190",
-          {
-            scrt2URL: "https://hibizdemo.my.salesforce-scrt.com",
-          }
+          { scrt2URL: "https://hibizdemo.my.salesforce-scrt.com" }
         );
       } catch (err) {
         console.error("Error loading Embedded Messaging:", err);
@@ -34,6 +34,40 @@ export default function App() {
     script.onerror = () =>
       console.error("Failed to load Salesforce Embedded Messaging.");
     document.body.appendChild(script);
+  }, []);
+
+  // ── 2. Generic Agentforce Context Bridge ───────────────────────────
+  useEffect(() => {
+    const handleAgentContext = (event) => {
+      if (!window.embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
+        console.warn("[AgentContext] utilAPI not ready.");
+        return;
+      }
+
+      const { visibleMessage = ".", context = {} } = event.detail;
+
+      window.embeddedservice_bootstrap.utilAPI.sendTextMessage(
+        visibleMessage,
+        [
+          {
+            name: "_AgentContext",
+            value: {
+              valueType: "StructuredValue",
+              value: {
+                ...context,
+                triggeredAt: new Date().toISOString(),
+                currentPage: window.location.href
+              }
+            }
+          }
+        ]
+      )
+      .then(() => console.log("[AgentContext] Context passed:", context))
+      .catch((err) => console.error("[AgentContext] Failed:", err));
+    };
+
+    window.addEventListener("agentforce:context", handleAgentContext);
+    return () => window.removeEventListener("agentforce:context", handleAgentContext);
   }, []);
 
   return (
