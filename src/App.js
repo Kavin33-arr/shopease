@@ -44,23 +44,22 @@ export default function App() {
 
 
   // ── 2. Generic Agentforce Context Bridge ───────────────────────────
-  useEffect(() => {
-    const handleAgentContext = (event) => {
-      if (!window.embeddedservice_bootstrap?.utilAPI?.sendTextMessage) {
-        console.warn("[AgentContext] utilAPI not ready.");
-        return;
-      }
+useEffect(() => {
+  const handler = (event) => {
+    // Guard: only handle your own messages
+    if (event.data?.type !== "handleleadcreation") return;
 
+    console.log("[postMessage] Received from LWC:", event.data.detail);
 
-      window.embeddedservice_bootstrap.utilAPI.sendTextMessage(JSON.stringify(event.detail))
-      .then(() => console.log("[AgentContext] Context passed:", event.detail))
+    window.embeddedservice_bootstrap.utilAPI
+      .sendTextMessage(JSON.stringify(event.data.detail))
+      .then((res) => console.log("[AgentContext] Sent:", res))
       .catch((err) => console.error("[AgentContext] Failed:", err));
-    };
+  };
 
-
-    window.addEventListener("handleleadcreation", handleAgentContext);
-    return () => window.removeEventListener("handleleadcreation", handleAgentContext);
-  }, []);
+  window.addEventListener("message", handler);
+  return () => window.removeEventListener("message", handler);
+}, []);
 
 
   return (
