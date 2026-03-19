@@ -6,24 +6,21 @@ import ChatFeedback from "./components/ChatFeedback";
 import allProducts from "./data/products";
 import "./App.css";
 
-
 export default function App() {
-
 
   // ── 1. Boot Salesforce Embedded Messaging ──────────────────────────
   useEffect(() => {
     if (document.getElementById("sf-embedded-bootstrap")) return;
 
-
     window.initEmbeddedMessaging = function () {
       try {
         window.embeddedservice_bootstrap.settings.language = "en_US";
         window.embeddedservice_bootstrap.init(
-          "00DdL00000q2kwr",
-          "Lead_Management",
-          "https://orgfarm-f0fa806fff-dev-ed.develop.my.site.com/ESWLeadManagement1773644864011",
+          "00DKd000004WqB4",
+          "shopease_test_2_1",
+          "https://hibizdemo.my.site.com/ESWshopeasetest211773482987417",
           {
-            scrt2URL: "https://orgfarm-f0fa806fff-dev-ed.develop.my.salesforce-scrt.com"
+            scrt2URL: "https://hibizdemo.my.salesforce-scrt.com"
           }
         );
       } catch (err) {
@@ -31,36 +28,32 @@ export default function App() {
       }
     };
 
-
     const script = document.createElement("script");
     script.id = "sf-embedded-bootstrap";
     script.src =
-      "https://orgfarm-f0fa806fff-dev-ed.develop.my.site.com/ESWLeadManagement1773644864011/assets/js/bootstrap.min.js";
+      "https://hibizdemo.my.site.com/ESWshopeasetest211773482987417/assets/js/bootstrap.min.js";
     script.onload = () => window.initEmbeddedMessaging();
     script.onerror = () =>
       console.error("Failed to load Salesforce Embedded Messaging.");
     document.body.appendChild(script);
   }, []);
 
-
   // ── 2. Generic Agentforce Context Bridge ───────────────────────────
-useEffect(() => {
-  const handler = (event) => {
-    // Guard: only handle your own messages
-    if (event.data?.type !== "handleleadcreation") return;
+  useEffect(() => {
+    const handler = (event) => {
+      if (event.data?.type !== "handleleadcreation") return;
 
-    console.log("[postMessage] Received from LWC:", event.data.detail);
+      console.log("[postMessage] Received from LWC:", event.data.detail);
 
-    window.embeddedservice_bootstrap.utilAPI
-      .sendTextMessage(JSON.stringify(event.data.detail))
-      .then((res) => console.log("[AgentContext] Sent:", res))
-      .catch((err) => console.error("[AgentContext] Failed:", err));
-  };
+      window.embeddedservice_bootstrap.utilAPI
+        .sendTextMessage(JSON.stringify(event.data.detail))
+        .then((res) => console.log("[AgentContext] Sent:", res))
+        .catch((err) => console.error("[AgentContext] Failed:", err));
+    };
 
-  window.addEventListener("message", handler);
-  return () => window.removeEventListener("message", handler);
-}, []);
-
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, []);
 
   return (
     <div className="app">
